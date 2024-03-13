@@ -5,7 +5,6 @@ from multiprocessing import get_context
 from threading import Thread
 import logging
 
-from PIL import Image
 from tqdm import tqdm
 
 from config import Config
@@ -23,6 +22,7 @@ logger.setLevel(logging.INFO)
 
 
 def create_index():
+    logger.info("Creating index")
     for index in proximus_admin_client.indexList():
         if (
             index.id.namespace == Config.PROXIMUS_NAMESPACE
@@ -48,7 +48,6 @@ def either(c):
 def index_data():
     lock.acquire()
     try:
-        logger.info("Creating index")
         create_index()
         filenames = doc_data_files()
 
@@ -112,22 +111,22 @@ def doc_data_files():
 
 
 def index_doc(filename):
-    doc = {"doc_id": filename}
+    doc = {"doc_name": os.path.basename(filename)}
     logger.debug(f"Opening file {filename}")
     with open(filename, 'r') as file:
         data = file.read()
-    doc["doc_name"] = os.path.basename(filename)
     logger.debug(f"Creating doc vector embedding {filename}")
     embedding = encoder(data)
+    doc["doc_text"] = data
     doc["doc_embedding"] = embedding.tolist()
-    doc["relative_path"] = relative_path(filename)
     # Insert record
     try:
         logger.debug(f"Inserting vector embedding into proximus {filename}")
         proximus_client.put(
-            Config.PROXIMUS_NAMESPACE, Config.PROXIMUS_SET, doc["doc_id"], doc
+            Config.PROXIMUS_NAMESPACE, Config.PROXIMUS_SET, doc["doc_name"], doc
         )
     except:
+        print("failed")
         # Retry again
         pass
 
