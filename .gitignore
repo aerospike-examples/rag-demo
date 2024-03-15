@@ -89,7 +89,6 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
 
 # Gatsby files
 .cache/
@@ -131,3 +130,5 @@ dist
 
 */documents/*
 __pycache__
+
+.DS_Store
