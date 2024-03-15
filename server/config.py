@@ -14,5 +14,5 @@ class Config(object):
     PROXIMUS_NAMESPACE = os.environ.get("PROXIMUS_NAMESPACE") or "vector-demo"
     PROXIMUS_SET = os.environ.get("PROXIMUS_SET") or "doc-data"
     PROXIMUS_VERIFY_TLS = os.environ.get("VERIFY_TLS") or True
-    PROXIMUS_MAX_RESULTS = int(os.environ.get("PROXIMUS_MAX_RESULTS") or 20)
+    PROXIMUS_MAX_RESULTS = int(os.environ.get("PROXIMUS_MAX_RESULTS") or 3)
     MAX_CONTENT_LENGTH = int(os.environ.get("MAX_CONTENT_LENGTH") or 10485760)

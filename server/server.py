@@ -7,7 +7,7 @@ logging.basicConfig(level=logging.CRITICAL)
 logger = logging.getLogger(__name__)
 
 # The flask application.
-app = Flask(__name__, static_url_path="")
+app = Flask(__name__, static_url_path="", static_folder="dist")
 app.config.from_object(Config)
 
 if Config.BASIC_AUTH_USERNAME and Config.BASIC_AUTH_PASSWORD:
@@ -20,8 +20,8 @@ import dataset_stats
 import routes
 
 dir(routes)
-indexer.start()
-dataset_stats.start()
+#indexer.start()
+#dataset_stats.start()
 
 if __name__ == "__main__":
     app.run(host="localhost", port=8080)

@@ -10,17 +10,17 @@ from proximus_client import proximus_client
 
 @app.route("/")
 def index_static():
-    return send_file("static/index.html")
+    return send_file("dist/index.html")
 
 
-@app.route("/search")
-def search_static():
-    return send_file("static/index.html")
+#@app.route("/search")
+#def search_static():
+#    return send_file("static/index.html")
 
 
-@app.route("/stats")
-def stats_static():
-    return send_file("static/index.html")
+#@app.route("/stats")
+#def stats_static():
+#    return send_file("static/index.html")
 
 
 @app.route("/rest/v1/search", methods=["POST"])
@@ -63,7 +63,7 @@ def search_internal():
 
 def vector_search(embedding, count=Config.PROXIMUS_MAX_RESULTS):
     # Execute kNN search over the dataset
-    bins = ("quote_id", "quote", "author")
+    bins = ("doc_name", "doc_text")
     return proximus_client.vectorSearch(
         Config.PROXIMUS_NAMESPACE,
         Config.PROXIMUS_INDEX_NAME,
