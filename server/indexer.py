@@ -14,8 +14,8 @@ from aerospike_vector import types_pb2
 
 lock = threading.Lock()
 extensions = [".md", ".mdx"]
-doc_datasets_glob = "documents/**/*"
-doc_datasets_folder = "documents"
+doc_datasets_glob = "../documents/**/*"
+doc_datasets_folder = "../documents"
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)

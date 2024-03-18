@@ -6,7 +6,15 @@ from dataset_stats import dataset_counts
 from data_encoder import encoder
 from server import app
 from proximus_client import proximus_client
+import llama_cpp
 
+model = llama_cpp.Llama(
+    model_path="../model/ggml-model-Q4_K_M.gguf",
+    chat_format="llama-2",
+    use_mlock=True,
+    n_ctx=0,
+    n_gpu_layers=-1
+)
 
 @app.route("/")
 def index_static():
@@ -23,16 +31,33 @@ def index_static():
 #    return send_file("static/index.html")
 
 
-@app.route("/rest/v1/search", methods=["POST"])
+@app.route("/rest/v1/chat", methods=["POST"])
 def search():
     # FileStorage object wrapper
     text = request.form["text"]
     if text:
         embedding = encoder(text)
         start = time.time()
-        results = vector_search(embedding.tolist())
+        result = vector_search(embedding.tolist())
         time_taken = time.time() - start
-        return format_results(results, time_taken)
+        #results = format_results(result, time_taken)
+        print(result[0].bins["doc_text"])
+        prompt = '''\
+        Please answer the following question about the Aerospike NoSQL database using only the provided context. 
+        If the question does not make sense within the provided context,
+        explain that you need more information and can only answer questions regarding Aerospike.
+
+        Context: {context}
+        Question: {question} 
+        '''.format(context=result[0].bins["doc_text"], question=text)
+        print(prompt)
+        response = model.create_chat_completion(messages=[{"role": "user", "content": prompt}], stream=True)
+        print(response)
+        def streamRes():
+            for chunk in response:
+                if chunk["choices"][0]["delta"].get("content"):
+                    yield chunk["choices"][0]["delta"]["content"]
+        return streamRes(), {"Content-Type": "text"}
     else:
         return "No text uploaded", 400
 
