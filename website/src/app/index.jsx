@@ -14,17 +14,15 @@ function App() {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let body = JSON.stringify({ prompt });
+    let body = new FormData();
+    body.append("text", prompt);
 
     setConversation(prev => prev === null ? `**${prompt.trim()}**\n\n` : `${prev}**${prompt.trim()}**\n\n`);
     setPrompt("");
 
-    fetch("http://localhost:8080/rest/v1/chat", {
+    fetch("/rest/v1/chat", {
       method: "POST",
-      body,
-      headers: {
-        "content-type": "application/json"
-      }
+      body
     })
     .then(async (response) => {
         const reader = response.body.getReader();
