@@ -1,0 +1,93 @@
+pre.codeBlock {
+    position: relative;
+    width: inherit;
+    height: fit-content;
+    max-height: 500px;
+    padding: 0;
+    font-size: 14px;
+    line-height: 22px;
+    overflow: hidden;
+}
+.copy {
+    position: absolute;
+    top: 20px;
+    right: 16px;
+    border-radius: 5px;
+    border: 1px solid white;
+    background-color: rgba(0,0,0,0);
+    color: white;
+    opacity: 0;
+    transition: opacity .2s ease-in-out;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.copyIcon {
+    fill: white;
+    height: 18px;
+    width: auto;
+}
+.codeBlock:hover .copy,
+.copied {
+    opacity: .8;
+}
+.codeBlockContents {
+    padding: 1rem 0 0 2rem;
+    position: relative;
+}
+.lineNumbers {
+    width: 2rem;
+    padding: 1rem .25rem 1rem 0;
+    text-align: right;
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-height: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(13 27 50);
+    color: white;
+}
+.codeContainer {
+    width: 100%;
+    overflow: auto;
+}
+.code {
+    width: fit-content;
+    padding: 0 1rem 1.25rem .5rem;
+}
+
+.copiedIcon {
+    width: 100%;
+    height: auto;
+}
+.path {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 0;
+}
+.path.check {
+    stroke-dashoffset: -100;
+    -webkit-animation: dash-check 0.9s 0.35s ease-in-out forwards;
+    animation: dash-check 0.9s 0.35s ease-in-out forwards;
+}
+
+@-webkit-keyframes dash-check {
+    0% {
+      stroke-dashoffset: -100;
+    }
+    100% {
+      stroke-dashoffset: 900;
+    }
+}
+@keyframes dash-check {
+    0% {
+      stroke-dashoffset: -100;
+    }
+    100% {
+      stroke-dashoffset: 900;
+    }
+}  
