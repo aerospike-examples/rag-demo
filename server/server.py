@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_basicauth import BasicAuth
 from config import Config
+from flask_cors import CORS
 import logging
 
 logging.basicConfig(level=logging.CRITICAL)
@@ -8,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 # The flask application.
 app = Flask(__name__, static_url_path="", static_folder="dist")
+CORS(app)
 app.config.from_object(Config)
 
 if Config.BASIC_AUTH_USERNAME and Config.BASIC_AUTH_PASSWORD:

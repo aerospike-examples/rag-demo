@@ -1,4 +1,5 @@
 from sentence_transformers import SentenceTransformer
+#from gensim.models.doc2vec import Doc2Vec, TaggedDocument 
 import logging
 
 logger = logging.getLogger(__name__)

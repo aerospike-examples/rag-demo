@@ -3,21 +3,31 @@
   max-width: 1400px;
   width: 100%;
   margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 100%;
+  font-size: 24px;
+}
+.container {
+  max-width: 950px;
+  width: 100%;
+  padding: 10px 20px 20px;
+  border: 1px solid lightgray;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 40px;
+  gap: 20px;
 }
+
 .conversation {
   max-width: 900px;
   width: 100%;
-  max-height: 500px;
+  max-height: 80dvh;
   overflow-y: scroll;
-  padding: 5px 10px;
-  border: 1px solid lightgray;
-  border-radius: 10px;
+  font-size: 24px;
 }
 
 .form {
@@ -38,7 +48,23 @@
 
 .prompt {
   padding: 5px 10px;
-  font-size: 14px;
+  font-size: 24px;
   border-radius: 5px;
   border: 1px solid lightgray ;
+}
+.waiting {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.waiting::after {
+  animation: ellipsis steps(1,end) 1s infinite;
+  content: "";
+}
+
+@keyframes ellipsis {
+    0%   { content: ""; }
+    50%  { content: "\275A"; }
+    100% { content: ""; }
 }

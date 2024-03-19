@@ -39,9 +39,10 @@ def search():
         embedding = encoder(text)
         start = time.time()
         result = vector_search(embedding.tolist())
+        
         time_taken = time.time() - start
         #results = format_results(result, time_taken)
-        print(result[0].bins["doc_text"])
+        
         prompt = '''\
         Please answer the following question about the Aerospike NoSQL database using only the provided context. 
         If the question does not make sense within the provided context,
@@ -50,9 +51,11 @@ def search():
         Context: {context}
         Question: {question} 
         '''.format(context=result[0].bins["doc_text"], question=text)
-        print(prompt)
-        response = model.create_chat_completion(messages=[{"role": "user", "content": prompt}], stream=True)
-        print(response)
+        try:
+            response = model.create_chat_completion(messages=[{"role": "user", "content": prompt}], stream=True)
+        except Exception as e:
+            return "An error occurred, please try again.\n{e}".format(e), 400 
+        
         def streamRes():
             for chunk in response:
                 if chunk["choices"][0]["delta"].get("content"):

@@ -5,6 +5,7 @@ aerospike-proximus==0.3.0
 # Flask framework
 flask~=2.3.2
 flask-wtf
+flask-cors
 Flask-BasicAuth
 werkzeug
 waitress
