@@ -16,5 +16,6 @@ sentence-transformers==2.2.2
 torch
 tqdm~=4.66.1
 
-# Llama deps
+# RAG dependencies
 llama-cpp-python==0.2.56
+scrapy

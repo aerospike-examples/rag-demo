@@ -2,7 +2,6 @@ pre.codeBlock {
     position: relative;
     width: inherit;
     height: fit-content;
-    max-height: 500px;
     padding: 0;
     font-size: 14px;
     line-height: 22px;

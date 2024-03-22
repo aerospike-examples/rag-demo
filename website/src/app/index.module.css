@@ -12,7 +12,7 @@
 .container {
   max-width: 950px;
   width: 100%;
-  padding: 10px 20px 20px;
+  padding: 0px 10px 20px 10px;
   border: 1px solid lightgray;
   border-radius: 10px;
   display: flex;
@@ -28,6 +28,7 @@
   max-height: 80dvh;
   overflow-y: scroll;
   font-size: 24px;
+  padding: 0 10px;
 }
 
 .form {
@@ -46,8 +47,12 @@
   gap: 10px;
 }
 
+.form > label > span {
+  padding-top: 10px;
+}
+
 .prompt {
-  padding: 5px 10px;
+  padding: 10px;
   font-size: 24px;
   border-radius: 5px;
   border: 1px solid lightgray ;

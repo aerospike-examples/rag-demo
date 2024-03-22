@@ -16,20 +16,18 @@ function App() {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(!prompt) return;
     let body = new FormData();
     body.append("text", prompt);
-
+    setStreaming(true);
     setConversation(prev => prev === null ? `**${prompt.trim()}**\n\n` : `${prev}**${prompt.trim()}**\n\n`);
     setPrompt("");
-    setWaiting(true);
 
     fetch("http://localhost:8080/rest/v1/chat", {
       method: "POST",
       body
     })
     .then(async (response) => {
-        setStreaming(true);
-        setWaiting(false);
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         while (true) {
@@ -37,11 +35,15 @@ function App() {
           if(done) {
             setConversation(prev => `${prev}\n\n`);
             setStreaming(false);
-            prmtRef.current.focus();
+            setTimeout(() => prmtRef.current.focus(), 100);
             return
           }
           else {
-            setConversation(prev => prev + decoder.decode(value, {stream: true}));
+            let text = decoder.decode(value, {stream: true});
+            if(text === "\nGenerating a response...\n\n") setWaiting(true);
+            else setWaiting(false);
+
+            setConversation(prev => prev + text);
           }
         }
     })
@@ -59,7 +61,7 @@ function App() {
           <form onSubmit={handleSubmit} className={styles.form}>
             <label>
               {!conversation && <span>Start the conversation...</span>}
-              <input ref={prmtRef} type="text" value={prompt} onChange={(e) => setPrompt(e.currentTarget.value)} className={styles.prompt} disabled={waiting || streaming} required />
+              <input ref={prmtRef} type="text" value={prompt} onChange={(e) => setPrompt(e.currentTarget.value)} className={styles.prompt} disabled={waiting || streaming} />
             </label>
             <button type="submit">&#9166;</button>
           </form>

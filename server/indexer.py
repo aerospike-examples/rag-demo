@@ -23,13 +23,14 @@ logger.setLevel(logging.INFO)
 
 def create_index():
     logger.info("Creating index")
-    for index in proximus_admin_client.indexList():
-        if (
-            index.id.namespace == Config.PROXIMUS_NAMESPACE
-            and index.id.name == Config.PROXIMUS_INDEX_NAME
-        ):
-            logger.info("Index already exists")
-            return
+    #for index in proximus_admin_client.indexList():
+    #    if (
+    #        index.id.namespace == Config.PROXIMUS_NAMESPACE
+    #        and index.id.name == Config.PROXIMUS_INDEX_NAME
+    #    ):
+    #        logger.info("Index already exists")
+    #        return
+    #proximus_admin_client.indexDrop(namespace=Config.PROXIMUS_NAMESPACE, name=Config.PROXIMUS_INDEX_NAME)
 
     proximus_admin_client.indexCreate(
         namespace=Config.PROXIMUS_NAMESPACE,

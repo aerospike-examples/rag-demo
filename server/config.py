@@ -10,9 +10,9 @@ class Config(object):
     PROXIMUS_ADVERTISED_LISTENER = (
         os.environ.get("PROXIMUS_ADVERTISED_LISTENER") or None
     )
-    PROXIMUS_INDEX_NAME = os.environ.get("PROXIMUS_INDEX_NAME") or "doc-search"
+    PROXIMUS_INDEX_NAME = os.environ.get("PROXIMUS_INDEX_NAME") or "doc-rag-demo"
     PROXIMUS_NAMESPACE = os.environ.get("PROXIMUS_NAMESPACE") or "vector-demo"
-    PROXIMUS_SET = os.environ.get("PROXIMUS_SET") or "doc-data"
+    PROXIMUS_SET = os.environ.get("PROXIMUS_SET") or "doc-chunks"
     PROXIMUS_VERIFY_TLS = os.environ.get("VERIFY_TLS") or True
-    PROXIMUS_MAX_RESULTS = int(os.environ.get("PROXIMUS_MAX_RESULTS") or 3)
+    PROXIMUS_MAX_RESULTS = int(os.environ.get("PROXIMUS_MAX_RESULTS") or 5)
     MAX_CONTENT_LENGTH = int(os.environ.get("MAX_CONTENT_LENGTH") or 10485760)

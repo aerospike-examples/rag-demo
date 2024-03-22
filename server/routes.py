@@ -13,7 +13,9 @@ model = llama_cpp.Llama(
     chat_format="llama-2",
     use_mlock=True,
     n_ctx=0,
-    n_gpu_layers=-1
+    n_gpu_layers=-1,
+    n_threads=6,
+    n_threads_batch=6
 )
 
 @app.route("/")
@@ -38,28 +40,42 @@ def search():
     if text:
         embedding = encoder(text)
         start = time.time()
-        result = vector_search(embedding.tolist())
-        
+        results = vector_search(embedding.tolist())
         time_taken = time.time() - start
-        #results = format_results(result, time_taken)
+        #result = format_results(results, time_taken)
         
         prompt = '''\
-        Please answer the following question about the Aerospike NoSQL database using only the provided context. 
-        If the question does not make sense within the provided context,
-        explain that you need more information and can only answer questions regarding Aerospike.
+        Please answer the following question about the Aerospike NoSQL database using the provided context. 
+        If the question does not make sense within the provided context, explain that you need more information 
+        and can only answer questions regarding Aerospike. Format your response as markdown.
 
-        Context: {context}
-        Question: {question} 
-        '''.format(context=result[0].bins["doc_text"], question=text)
+        Question: {question}
+        Context: {context} 
+        '''.format(question=text, context=" ".join([result.bins["content"] for result in results]))
+        prompt = prompt[:10000]
         try:
             response = model.create_chat_completion(messages=[{"role": "user", "content": prompt}], stream=True)
         except Exception as e:
             return "An error occurred, please try again.\n{e}".format(e), 400 
         
         def streamRes():
+            yield f"_Query executed in {round(time_taken, 5)} seconds_\n\n"
+            yield f"The following documents will be used to provide context:\n\n"
+            
+            docs = {}
+            for result in results:
+                docs[result.bins['title']] = result.bins['url']
+            
+            for key in docs:
+                yield f"- [{key}]({docs[key]})\n"
+            
+            time.sleep(.5)
+            yield "\nGenerating a response...\n\n"
+
             for chunk in response:
-                if chunk["choices"][0]["delta"].get("content"):
-                    yield chunk["choices"][0]["delta"]["content"]
+                content = chunk["choices"][0]["delta"].get("content")
+                if content:
+                    yield content
         return streamRes(), {"Content-Type": "text"}
     else:
         return "No text uploaded", 400
@@ -91,7 +107,7 @@ def search_internal():
 
 def vector_search(embedding, count=Config.PROXIMUS_MAX_RESULTS):
     # Execute kNN search over the dataset
-    bins = ("doc_name", "doc_text")
+    bins = ("title", "url", "content")
     return proximus_client.vectorSearch(
         Config.PROXIMUS_NAMESPACE,
         Config.PROXIMUS_INDEX_NAME,

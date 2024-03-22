@@ -128,7 +128,7 @@ out
 .yarn/install-state.gz
 .pnp.*
 
-*/documents/*
+documents/*.md*
 __pycache__
 
 .DS_Store
