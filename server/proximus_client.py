@@ -1,5 +1,4 @@
 from aerospike_vector import vectordb_client, vectordb_admin, types
-
 from config import Config
 
 proximus_client = vectordb_client.VectorDbClient(

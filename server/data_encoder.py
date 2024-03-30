@@ -1,15 +1,10 @@
+import torch.nn.functional as F
 from sentence_transformers import SentenceTransformer
-#from gensim.models.doc2vec import Doc2Vec, TaggedDocument 
-import logging
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.CRITICAL)
 
 # The image or text encoding model.
-model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
-MODEL_DIM = 384
+model = SentenceTransformer("../../nomic-embed-text-v1.5/", trust_remote_code=True)
+MODEL_DIM = 768
 
-
-def encoder(data):
-    logger.debug(f"Encoding data {data}")
-    return model.encode(data)
+def encoder(data, type: str = "document"):
+    doc = f"search_{type}: {data}"
+    return model.encode(doc)
