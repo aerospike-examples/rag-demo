@@ -134,3 +134,5 @@ __pycache__
 .DS_Store
 
 *.gguf
+
+*/.scrapy
