@@ -7,6 +7,15 @@ from server import app
 from proximus_client import proximus_client
 from llm import model
 
+PROMPT = '''\
+You are a helpful assistant answering questions about the Aerospike NoSQL database.
+Using the following context, answer the question.
+If you are unable to answer the question, ask for more information.
+
+Context: {context}
+Question: {question}
+'''
+
 @app.route("/")
 def index_static():
     return send_file("dist/index.html")
@@ -16,63 +25,32 @@ def search():
     text = request.form["text"]
     if text:
         embedding = encoder(text, "search")
+        print(embedding[0])
         start = time.time()
-        results = vector_search(embedding.tolist(), 10)
+        results = vector_search(embedding[0].tolist(), 6)
         time_taken = time.time() - start
 
         documents = {}
         for result in results:
+            print(result.bins['title'])
+            print(str(result.distance))
             if documents.get(result.bins['title']):
                 documents[result.bins['title']]["content"].insert(result.bins["idx"], result.bins["content"])
             else:        
                 documents[result.bins['title']] = {"url": result.bins['url'], "content": [result.bins["content"]]}
         
         context = ""
+        docs = []
         for idx, key in enumerate(documents):
-             if idx < 5:
+             if idx < 3:
                 context += " ".join(documents[key]["content"])
-
-        prompt = '''\
-        Answer the question about the Aerospike NoSQL database using the following context.
-        If you are not sure how to answer the question, ask the user to restate the question.
+                docs.append({"title": key, "url": documents[key]["url"]})
         
-        Context: {context}
-        Question: {question}
-        '''.format(question=text, context=context)
-        
-        try:
-            response = model.create_chat_completion(
-                messages=[
-                    {"role": "user", "content": prompt},
-                    {"role": "model", "content": "Answer:"}
-                ], 
-                stream=True,
-                repeat_penalty=1.0,
-                temperature=0
-            )
-        except Exception as e:
-            return "An error occurred, please try again.\n{e}".format(e), 400 
-        
-        def streamRes():
-            yield f"_Query executed in {round(time_taken, 5)} seconds_\n\n"
-            yield f"The following documents will be used to provide context:\n\n"
-            
-            for key in documents:
-                yield f"- [{key}]({documents[key]['url']})\n"
-            
-            time.sleep(.5)
-            yield "\nGenerating a response...\n\n"
-
-            for chunk in response:
-                content = chunk["choices"][0]["delta"].get("content")
-                if content:
-                    yield content
-        return streamRes(), {"Content-Type": "text"}
+        return stream_response(PROMPT.format(question=text, context=context), time_taken, docs), {"Content-Type": "text"}
     else:
-        return "No text uploaded", 400
+        return "No prompt provided. Please provide a prompt.", 400
 
 def vector_search(embedding, count=Config.PROXIMUS_MAX_RESULTS):
-    # Execute kNN search over the dataset
     bins = ("title", "url", "idx", "content")
     return proximus_client.vectorSearch(
         Config.PROXIMUS_NAMESPACE,
@@ -82,3 +60,31 @@ def vector_search(embedding, count=Config.PROXIMUS_MAX_RESULTS):
         None,
         *bins,
     )
+
+def stream_response(prompt, time_taken, docs):
+    yield f"_Query executed in {round(time_taken * 1000, 5)} ms_\n\n"
+    yield f"The following documents will be used to provide context:\n\n"
+    
+    for doc in docs:
+        yield f"- [{doc['title']}]({doc['url']})\n"
+    
+    time.sleep(.5)
+    yield "\nGenerating a response...\n\n"
+
+    try:
+        response = model.create_chat_completion(
+            messages=[
+                {"role": "user", "content": prompt}
+            ], 
+            stream=True,
+            repeat_penalty=1.0,
+            temperature=0
+        )
+    except Exception as e:
+        return "An error occurred, please try again.\n{e}".format(e), 400 
+
+    for chunk in response:
+        content = chunk["choices"][0]["delta"].get("content")
+        if content:
+            yield content
+    return
