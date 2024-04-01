@@ -33,16 +33,18 @@ def search():
                 context += " ".join(documents[key]["content"])
 
         prompt = '''\
-        Use the following context to answer this question about the Aerospike NoSQL database: {question}
-        If the context does not help to answer the question, ask the user to restate the question.
+        Answer the question about the Aerospike NoSQL database using the following context.
+        If you are not sure how to answer the question, ask the user to restate the question.
         
-        context: {context}
+        Context: {context}
+        Question: {question}
         '''.format(question=text, context=context)
         
         try:
             response = model.create_chat_completion(
                 messages=[
-                    {"role": "user", "content": prompt}
+                    {"role": "user", "content": prompt},
+                    {"role": "model", "content": "Answer:"}
                 ], 
                 stream=True,
                 repeat_penalty=1.0,
