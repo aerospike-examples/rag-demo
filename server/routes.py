@@ -24,7 +24,7 @@ def index_static():
 def search():
     text = request.form["text"]
     if text:
-        embedding = encoder(text, "search")
+        embedding = encoder(text, "query")
         print(embedding[0])
         start = time.time()
         results = vector_search(embedding[0].tolist(), 6)
