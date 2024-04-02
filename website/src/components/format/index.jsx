@@ -61,6 +61,19 @@ const Format = ({className, children}) => {
             p: (props) => (
                 <p className={className}>{props.children}</p>
             ),
+            a: (props) => {
+                let href = props.href.startsWith("http") ? 
+                    props.href
+                    :
+                    props.href.startsWith("/") ?
+                        `https://aerospike.com${props.href}`
+                        :
+                        `https://${props.href}`;
+                        
+                return (
+                    <a href={href} target="_blank" rel="noopener noreferrer">{props.children}</a>
+                )
+            },
             pre: (props) => {
                 const {children} = props;
                 const match = /language-(\w+)/.exec(children.props.className || '');
@@ -88,7 +101,7 @@ const Format = ({className, children}) => {
                                         </div>
                                     </div>
                                     </div>
-                                    <button className={clsx(styles.copy, copied && styles.copied)} onClick={() => copyCode(code)}>{copied ? <Copied /> : <CopyIcon />}</button>
+                                    {/*<button className={clsx(styles.copy, copied && styles.copied)} onClick={() => copyCode(code)}>{copied ? <Copied /> : <CopyIcon />}</button>*/}
                                 </pre>
                             )
                         }}

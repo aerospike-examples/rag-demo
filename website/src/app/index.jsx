@@ -33,7 +33,7 @@ function App() {
         while (true) {
           const { done, value } = await reader.read();
           if(done) {
-            setConversation(prev => `${prev}\n\n`);
+            setConversation(prev => `${prev}\n\n<hr />\n\n`);
             setStreaming(false);
             setTimeout(() => prmtRef.current.focus(), 100);
             return
@@ -50,7 +50,12 @@ function App() {
   }
 
   return (
+      <>
+      <div className={styles.stripe}/>
       <div className={styles.app}>
+        <header className={styles.header}>
+          <a href='/'><img src='https://developer-hub.s3.us-west-1.amazonaws.com/email-signature/logo_1707930697719.png' alt="Aerospike logo" /></a>
+        </header>
         <div className={styles.container}>
           {conversation &&
           <div className={styles.conversation}>
@@ -60,13 +65,13 @@ function App() {
           </div>}
           <form onSubmit={handleSubmit} className={styles.form}>
             <label>
-              {!conversation && <span>Start the conversation...</span>}
-              <input ref={prmtRef} type="text" value={prompt} onChange={(e) => setPrompt(e.currentTarget.value)} className={styles.prompt} disabled={waiting || streaming} />
+              <input ref={prmtRef} type="text" value={prompt} onChange={(e) => setPrompt(e.currentTarget.value)} className={styles.prompt} disabled={waiting || streaming} placeholder='Ask a question...' />
             </label>
             <button type="submit">&#9166;</button>
           </form>
         </div>
       </div>
+      </>
   )
 }
 

@@ -25,15 +25,12 @@ def search():
     text = request.form["text"]
     if text:
         embedding = encoder(text, "query")
-        print(embedding[0])
         start = time.time()
         results = vector_search(embedding[0].tolist(), 6)
         time_taken = time.time() - start
 
         documents = {}
         for result in results:
-            print(result.bins['title'])
-            print(str(result.distance))
             if documents.get(result.bins['title']):
                 documents[result.bins['title']]["content"].insert(result.bins["idx"], result.bins["content"])
             else:        
