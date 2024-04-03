@@ -2,11 +2,10 @@
 # Aerospike dependencies
 aerospike-proximus==0.3.1
 
-# Flask framework
-flask~=2.3.2
-flask-cors
-werkzeug
-waitress
+# Web Server 
+fastapi
+uvicorn[standard]
+python-multipart
 
 # Web Scraper
 scrapy
@@ -14,6 +13,6 @@ scrapy-playwright
 
 # RAG dependencies
 llama-cpp-python==0.2.56
-sentence-transformers==2.6.1
+transformers
 torch
 einops

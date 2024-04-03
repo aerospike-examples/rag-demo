@@ -22,4 +22,4 @@ def encoder(data, type: str = "document"):
     
     embeddings = mean_pooling(model_output, encoded_input['attention_mask'])
     embeddings = F.normalize(embeddings, p=2, dim=1)
-    return embeddings
+    return embeddings[0].tolist()

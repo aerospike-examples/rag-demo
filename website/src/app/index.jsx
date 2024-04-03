@@ -23,8 +23,9 @@ function App() {
     setConversation(prev => prev === null ? `**${prompt.trim()}**\n\n` : `${prev}**${prompt.trim()}**\n\n`);
     setPrompt("");
 
-    fetch("http://localhost:8080/rest/v1/chat", {
+    fetch("http://127.0.0.1:8080/rest/v1/chat/", {
       method: "POST",
+      credentials: "include",
       body
     })
     .then(async (response) => {

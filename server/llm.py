@@ -29,3 +29,13 @@ model = llama_cpp.Llama(
     n_threads_batch=6,
     tokenizer=tokenizer
 )
+
+def create_chat(prompt):
+    return model.create_chat_completion(
+        messages=[
+            {"role": "user", "content": prompt}
+        ],
+        stream=True,
+        repeat_penalty=1.0,
+        temperature=0
+    )

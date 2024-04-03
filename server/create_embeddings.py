@@ -1,4 +1,5 @@
 import json
+import gc
 from data_encoder import encoder, MODEL_DIM
 from proximus_client import proximus_client, proximus_admin_client
 from aerospike_vector import types_pb2
@@ -82,11 +83,13 @@ with open('documents.jsonl') as f:
                 "content": chunk.strip(), 
                 "idx": chunk_idx
             }
-            doc_embedding = encoder(doc["content"])
-            doc["doc_embedding"] = doc_embedding.tolist()
+            doc["doc_embedding"] = encoder(doc["content"])
             proximus_client.put(Config.PROXIMUS_NAMESPACE, Config.PROXIMUS_SET, f"{doc['url'] + str(chunk_idx)}", doc)
             chunk = ""
             chunk_idx += 1
+            del doc
+        del document, chunk
+        gc.collect()
 
 proximus_client.close()
 proximus_admin_client.close()
