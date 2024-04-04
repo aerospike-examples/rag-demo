@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import styles from './index.module.css';
 import Format from '../components/format';
+import { Gemma } from '../components/logos';
 
 function App() {
   const [prompt, setPrompt] = useState("");
@@ -23,7 +24,7 @@ function App() {
     setConversation(prev => prev === null ? `**${prompt.trim()}**\n\n` : `${prev}**${prompt.trim()}**\n\n`);
     setPrompt("");
 
-    fetch("http://127.0.0.1:8080/rest/v1/chat/", {
+    fetch("/rest/v1/chat/", {
       method: "POST",
       credentials: "include",
       body
@@ -56,6 +57,7 @@ function App() {
       <div className={styles.app}>
         <header className={styles.header}>
           <a href='/'><img src='https://developer-hub.s3.us-west-1.amazonaws.com/email-signature/logo_1707930697719.png' alt="Aerospike logo" /></a>
+          <div className={styles.gemma}><Gemma className={styles.logos}/></div>
         </header>
         <div className={styles.container}>
           {conversation &&

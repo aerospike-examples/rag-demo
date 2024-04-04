@@ -9,29 +9,20 @@ import time
 from config import Config
 from data_encoder import encoder
 from proximus_client import proximus_client
-from llm import create_chat
-
-PROMPT = '''\
-You are a helpful assistant answering questions about the Aerospike NoSQL database.
-Using the following context, answer the question.
-If you are unable to answer the question, ask for more information.
-
-Context: {context}
-Question: {question}
-'''
-
-app = FastAPI()
-security = HTTPBasic()
-
-app.mount("/static", StaticFiles(directory="dist"), name="static")
+from llm import create_chat, PROMPT
 
 origins = [
-    "http://localhost:8080",
-    "http://127.0.0.1:8080",
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
+    "http://localhost:8080"
 ]
 
+app = FastAPI(
+    title="Proximus RAG Demo",
+    openapi_url=None, 
+    docs_url=None,
+    redoc_url=None,
+    swagger_ui_oauth2_redirect_url=None,
+)
+app.mount("/static", StaticFiles(directory="static"), name="static")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -39,6 +30,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+security = HTTPBasic()
 
 def login(credentials: Annotated[HTTPBasicCredentials, Depends(security)]):
     correct_uname = secrets.compare_digest(credentials.username.encode("utf8"), Config.BASIC_AUTH_USERNAME.encode("utf8"))
@@ -61,25 +53,19 @@ async def create_chat_completion(text: Annotated[str, Form()], logged_in: Annota
         results = vector_search(embedding, 6)
         time_taken = time.time() - start
 
-        documents = {}
-        for result in results:
-            if documents.get(result.bins['title']):
-                documents[result.bins['title']]["content"].insert(result.bins["idx"], result.bins["content"])
-            else:        
-                documents[result.bins['title']] = {"url": result.bins['url'], "content": [result.bins["content"]]}
-        
         context = ""
-        docs = []
-        for idx, key in enumerate(documents):
-            if idx < 3:
-                context += " ".join(documents[key]["content"])
-                docs.append({"title": key, "url": documents[key]["url"]})
-        
-        return StreamingResponse(stream_response(PROMPT.format(question=text, context=context), time_taken, docs), media_type="text")
-    else:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Unauthorized!"
+        docs = {}
+        for result in results:
+            context += f"{result.bins['content']}\n\n"
+            docs[result.bins["title"]] = result.bins["url"]
+                   
+        return StreamingResponse(
+            stream_response(
+                PROMPT.format(question=text, context=context),
+                time_taken, 
+                docs
+            ), 
+            media_type="text"
         )
 
 @app.get("/")
@@ -102,8 +88,8 @@ def stream_response(prompt, time_taken, docs):
     yield f"_Query executed in {round(time_taken * 1000, 5)} ms_\n\n"
     yield f"The following documents will be used to provide context:\n\n"
     
-    for doc in docs:
-        yield f"- [{doc['title']}]({doc['url']})\n"
+    for key in docs:
+        yield f"- [{key}]({docs[key]})\n"
     
     time.sleep(.5)
     yield "\nGenerating a response...\n\n"
@@ -115,7 +101,10 @@ def stream_response(prompt, time_taken, docs):
             if content:
                 yield content
     
-    except Exception as e:
-        return "An error occurred, please try again.\n{e}".format(e), 400 
+    except:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="An error occurred, please try again."
+        )
     
     return

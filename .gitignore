@@ -136,3 +136,5 @@ __pycache__
 *.gguf
 
 */.scrapy
+
+*.env

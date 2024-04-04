@@ -7,6 +7,30 @@ class MySpider(SitemapSpider):
         "https://aerospike.com/docs/sitemap.xml",
         "https://aerospike.com/developer/sitemap.xml"
     ]
+    other_urls = [
+        "https://aerospike-vector-search.netlify.app/vector",
+        "https://aerospike-vector-search.netlify.app/vector/architecture",
+        "https://aerospike-vector-search.netlify.app/vector/architecture/caching",
+        "https://aerospike-vector-search.netlify.app/vector/architecture/clustering",
+        "https://aerospike-vector-search.netlify.app/vector/architecture/components",
+        "https://aerospike-vector-search.netlify.app/vector/architecture/hnsw",
+        "https://aerospike-vector-search.netlify.app/vector/architecture/vector-data",
+        "https://aerospike-vector-search.netlify.app/vector/develop",
+        "https://aerospike-vector-search.netlify.app/vector/develop/python",
+        "https://aerospike-vector-search.netlify.app/vector/develop/sample-apps",
+        "https://aerospike-vector-search.netlify.app/vector/faq",
+        "https://aerospike-vector-search.netlify.app/vector/install",
+        "https://aerospike-vector-search.netlify.app/vector/install/aerolab",
+        "https://aerospike-vector-search.netlify.app/vector/install/docker",
+        "https://aerospike-vector-search.netlify.app/vector/install/linux",
+        "https://aerospike-vector-search.netlify.app/vector/install/sandbox",
+        "https://aerospike-vector-search.netlify.app/vector/operate/configuration"
+    ]
+
+    def start_requests(self):
+        requests = list(super(MySpider, self).start_requests())
+        requests += [Request(url, self.parse, meta={"playwright": True}) for url in self.other_urls]
+        return requests
 
     def _parse_sitemap(self, response):
         body = self._get_sitemap_body(response)

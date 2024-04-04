@@ -8,7 +8,7 @@ def mean_pooling(model_output, attention_mask):
     return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
 
 tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
-model = AutoModel.from_pretrained("../../nomic-embed-text-v1.5/", trust_remote_code=True, safe_serialization=True)
+model = AutoModel.from_pretrained("../../Models/nomic-embed-text-v1.5/", trust_remote_code=True, safe_serialization=True)
 model.eval()
 
 MODEL_DIM = 768

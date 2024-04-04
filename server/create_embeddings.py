@@ -83,7 +83,7 @@ with open('documents.jsonl') as f:
                 "content": chunk.strip(), 
                 "idx": chunk_idx
             }
-            doc["doc_embedding"] = encoder(doc["content"])
+            doc["doc_embedding"] = encoder(f"TITLE: {doc['title']}, DESCRIPTION: {doc['desc']}, CONTENT: {doc['content']}")
             proximus_client.put(Config.PROXIMUS_NAMESPACE, Config.PROXIMUS_SET, f"{doc['url'] + str(chunk_idx)}", doc)
             chunk = ""
             chunk_idx += 1

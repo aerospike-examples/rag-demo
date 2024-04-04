@@ -1,5 +1,6 @@
 # TODO: Include exact versions
 # Aerospike dependencies
+--extra-index-url https://aerospike.jfrog.io/artifactory/api/pypi/aerospike-pypi-dev/simple
 aerospike-proximus==0.3.1
 
 # Web Server 
@@ -10,9 +11,10 @@ python-multipart
 # Web Scraper
 scrapy
 scrapy-playwright
+markdownify
 
 # RAG dependencies
-llama-cpp-python==0.2.56
+#llama-cpp-python
 transformers
 torch
 einops
