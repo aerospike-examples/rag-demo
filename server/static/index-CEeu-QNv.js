@@ -98,4 +98,7 @@ prismjs/prism.js:
 `),s(!1),setTimeout(()=>o.current.focus(),100);return}else{let g=y.decode(E,{stream:!0});u(g===`
 Generating a response...
 
+`||g===`
+Waiting for slot...
+
 `),r(T=>T+g)}}})};return Z.jsxs(Z.Fragment,{children:[Z.jsx("div",{className:Ut.stripe}),Z.jsxs("div",{className:Ut.app,children:[Z.jsxs("header",{className:Ut.header,children:[Z.jsx("a",{href:"/",children:Z.jsx("img",{src:"https://developer-hub.s3.us-west-1.amazonaws.com/email-signature/logo_1707930697719.png",alt:"Aerospike logo"})}),Z.jsx("div",{className:Ut.gemma,children:Z.jsx(h4,{className:Ut.logos})})]}),Z.jsxs("div",{className:Ut.container,children:[n&&Z.jsxs("div",{className:Ut.conversation,children:[Z.jsx(p4,{children:n}),i&&Z.jsx("div",{className:Ut.waiting}),Z.jsx("div",{ref:c})]}),Z.jsxs("form",{onSubmit:d,className:Ut.form,children:[Z.jsx("label",{children:Z.jsx("input",{ref:o,type:"text",value:e,onChange:f=>t(f.currentTarget.value),className:Ut.prompt,disabled:i||a,placeholder:"Ask a question..."})}),Z.jsx("button",{type:"submit",children:"⏎"})]})]})]})]})}to.createRoot(document.getElementById("root")).render(Z.jsx(tg.StrictMode,{children:Z.jsx(m4,{})}));

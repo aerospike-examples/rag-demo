@@ -1,10 +1,11 @@
 import llama_cpp
 
 model = llama_cpp.Llama(
-    model_path="../../Models/gemma-7b-it/ggml-model-f32.gguf",
+    model_path="../../Models/gemma-7b-it/gemma-7b-it.gguf",
     chat_format="gemma",
     n_ctx=0,
-    n_gpu_layers=-1
+    n_gpu_layers=-1,
+    n_threads=6
 )
 
 PROMPT = '''\

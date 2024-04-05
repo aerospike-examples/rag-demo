@@ -10,10 +10,14 @@ from config import Config
 from data_encoder import encoder
 from proximus_client import proximus_client
 from llm import create_chat, PROMPT
+from threading import Lock
 
 origins = [
     "http://localhost:8080"
 ]
+
+embed_lock = Lock()
+llm_lock = Lock()
 
 app = FastAPI(
     title="Proximus RAG Demo",
@@ -22,7 +26,7 @@ app = FastAPI(
     redoc_url=None,
     swagger_ui_oauth2_redirect_url=None,
 )
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory="static/static"), name="static")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -48,14 +52,16 @@ def login(credentials: Annotated[HTTPBasicCredentials, Depends(security)]):
 @app.post("/rest/v1/chat/")
 async def create_chat_completion(text: Annotated[str, Form()], logged_in: Annotated[bool, Depends(login)] = False):
     if logged_in:
-        embedding = encoder(text, "query")
+        with embed_lock:
+            embedding = encoder(text, "query")
         start = time.time()
         results = vector_search(embedding, 6)
         time_taken = time.time() - start
 
         context = ""
         docs = {}
-        for result in results:
+        sorted_results = sorted(results, key=lambda result: result.distance, reverse=True)
+        for result in sorted_results:
             context += f"{result.bins['content']}\n\n"
             docs[result.bins["title"]] = result.bins["url"]
                    
@@ -71,10 +77,10 @@ async def create_chat_completion(text: Annotated[str, Form()], logged_in: Annota
 @app.get("/")
 async def root(logged_in: Annotated[bool, Depends(login)] = False):
     if logged_in:
-        return FileResponse('dist/index.html')
+        return FileResponse('static/index.html')
 
 def vector_search(embedding, count=Config.PROXIMUS_MAX_RESULTS):
-    bins = ("title", "url", "idx", "content")
+    bins = ("title", "url", "content")
     return proximus_client.vectorSearch(
         Config.PROXIMUS_NAMESPACE,
         Config.PROXIMUS_INDEX_NAME,
@@ -91,20 +97,25 @@ def stream_response(prompt, time_taken, docs):
     for key in docs:
         yield f"- [{key}]({docs[key]})\n"
     
-    time.sleep(.5)
-    yield "\nGenerating a response...\n\n"
+    if llm_lock.locked():
+        time.sleep(.5)
+        yield "\nWaiting for slot...\n\n"
 
-    try:
-        response = create_chat(prompt)
-        for chunk in response:
-            content = chunk["choices"][0]["delta"].get("content")
-            if content:
-                yield content
-    
-    except:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="An error occurred, please try again."
-        )
+    with llm_lock:
+        time.sleep(.5)
+        yield "\nGenerating a response...\n\n"
+        
+        try:
+            response = create_chat(prompt)
+            for chunk in response:
+                content = chunk["choices"][0]["delta"].get("content")
+                if content:
+                    yield content
+        
+        except:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="An error occurred, please try again."
+            )
     
     return

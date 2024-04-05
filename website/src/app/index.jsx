@@ -42,7 +42,7 @@ function App() {
           }
           else {
             let text = decoder.decode(value, {stream: true});
-            if(text === "\nGenerating a response...\n\n") setWaiting(true);
+            if(text === "\nGenerating a response...\n\n" || text === "\nWaiting for slot...\n\n") setWaiting(true);
             else setWaiting(false);
 
             setConversation(prev => prev + text);
