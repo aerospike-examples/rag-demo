@@ -24,7 +24,7 @@ const Conversation = () => {
 		body.append("text", prompt);
 		
 		setStreaming(true);
-		setConversation(prev => prev === null ? `**${prompt.trim()}**\n\n` : `${prev}**${prompt.trim()}**\n\n`);
+		setConversation(prev => prev === null ? `### ${prompt.trim()}\n\n` : `${prev}### ${prompt.trim()}\n\n`);
 		setPrompt("");
 
 		fetch("https://vector-rag.aerospike.com/rest/v1/chat/", {
