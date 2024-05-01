@@ -8,6 +8,7 @@ const App = () => {
   const { auth } = useAuth();
 
   return (
+      auth !== null && 
       <div className={styles.app}>
         {auth ?
         <>
