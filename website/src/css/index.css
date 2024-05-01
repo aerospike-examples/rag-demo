@@ -17,12 +17,12 @@
 a {
   font-weight: 500;
   color: #0097d3;
+  text-decoration: none;
   border-bottom: 1px solid #0097d3;
 }
 a:hover {
   color: #ffffff;
   background-color: #0097d3;
-  text-decoration: none;
 }
 table{
   border-collapse: collapse;
