@@ -28,8 +28,11 @@ def md(html, **options):
     return MarkdownConvert(**options).convert(html)
 
 def code_callback(el):
-    return el['class'][1].split("-")[1] if el.has_attr('class') else None
-
+    if el.has_attr('class'):
+        return el['class'][1].split("-")[1] if not el['class'][0] == "ckeditor_codeblock"  else None
+    else:
+        return None
+    
 def create_index():
     print("Checking for vector index")
     for index in proximus_admin_client.indexList():
@@ -62,7 +65,7 @@ options = {
     "strip": ["hr"]
 }
 
-with open('documents.jsonl') as f:
+with open('../scraper/documents.jsonl') as f:
     for line in f:
         document = json.loads(line)
         chunk = ""
@@ -71,7 +74,7 @@ with open('documents.jsonl') as f:
         for section in document["doc"]:
             try:
                 chunk += (" " + md(section, **options))
-            except:
+            except:           
                 print(section)
 
             if (len(chunk) - chunk.count(" ")) < 2000:

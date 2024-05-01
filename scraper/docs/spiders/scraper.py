@@ -92,7 +92,7 @@ class MySpider(SitemapSpider):
         if "aerospike.com/blog" in url:
             doc = response.xpath("//div[contains(@class, '_main')]/astro-island/node()").extract()
         elif "support.aerospike.com" in url:
-            doc = response.xpath("//article[contains(@class, 'content')]/div[contains(@class, 'full')]/node()").extract()
+            doc = response.xpath("/descendant::div[contains(@class, 'section__content')][2]/div/node()").extract()
         else:
             doc = response.xpath("//div[contains(@class, 'markdown')]/node()").extract()
             

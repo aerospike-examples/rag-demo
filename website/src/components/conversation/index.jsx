@@ -27,7 +27,7 @@ const Conversation = () => {
 		setConversation(prev => prev === null ? `### ${prompt.trim()}\n\n` : `${prev}### ${prompt.trim()}\n\n`);
 		setPrompt("");
 
-		fetch("https://vector-rag.aerospike.com/rest/v1/chat/", {
+		fetch("https://server.vector-rag.aerospike.com/rest/v1/chat/", {
 			method: "POST",
 			headers: {
 				'Authorization': `Bearer ${user.token.access_token}`
