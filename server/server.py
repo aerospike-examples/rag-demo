@@ -1,10 +1,9 @@
 from typing import Annotated
-from fastapi import Depends, FastAPI, HTTPException, Form, status
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, StreamingResponse
+from fastapi import FastAPI, Depends, HTTPException, Form, status
+from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
-import secrets
+from fastapi.security import OAuth2PasswordBearer
+import requests
 import time
 from config import Config
 from data_encoder import encoder
@@ -13,7 +12,8 @@ from llm import create_chat, PROMPT
 from threading import Lock
 
 origins = [
-    "http://localhost:8080"
+    "https://vector-rag-aerospike.netlify.app",
+    "https://vector-rag.aerospike.com"
 ]
 
 embed_lock = Lock()
@@ -26,7 +26,7 @@ app = FastAPI(
     redoc_url=None,
     swagger_ui_oauth2_redirect_url=None,
 )
-app.mount("/static", StaticFiles(directory="static/static"), name="static")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -34,24 +34,22 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-security = HTTPBasic()
 
-def login(credentials: Annotated[HTTPBasicCredentials, Depends(security)]):
-    correct_uname = secrets.compare_digest(credentials.username.encode("utf8"), Config.BASIC_AUTH_USERNAME.encode("utf8"))
-    correct_pword = secrets.compare_digest(credentials.password.encode("utf8"), Config.BASIC_AUTH_PASSWORD.encode("utf8"))
-    
-    if not (correct_uname and correct_pword):
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+def get_auth(token: Annotated[str, Depends(oauth2_scheme)]):
+    url = "https://vector-rag-aerospike.netlify.app/.netlify/functions/check_user"
+    response = requests.get(url, headers={"Authorization": "Bearer " + token})
+    if not response.ok:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Username or Password incorrect",
-            headers={"WWW-Authenticate": "Basic"}
+            status_code=status.HTTP_401_UNAUTHORIZED
         )
     else:
         return True
 
 @app.post("/rest/v1/chat/")
-async def create_chat_completion(text: Annotated[str, Form()], logged_in: Annotated[bool, Depends(login)] = False):
-    if logged_in:
+async def create_chat_completion(text: Annotated[str, Form()], auth: Annotated[bool, Depends(get_auth)] = False):
+    if auth:
         with embed_lock:
             embedding = encoder(text, "query")
         start = time.time()
@@ -60,11 +58,11 @@ async def create_chat_completion(text: Annotated[str, Form()], logged_in: Annota
 
         context = ""
         docs = {}
-        sorted_results = sorted(results, key=lambda result: result.distance, reverse=True)
+        sorted_results = sorted(results, key=lambda result: result.distance)
         for result in sorted_results:
             context += f"{result.bins['content']}\n\n"
             docs[result.bins["title"]] = result.bins["url"]
-                   
+                    
         return StreamingResponse(
             stream_response(
                 PROMPT.format(question=text, context=context),
@@ -73,11 +71,6 @@ async def create_chat_completion(text: Annotated[str, Form()], logged_in: Annota
             ), 
             media_type="text"
         )
-
-@app.get("/")
-async def root(logged_in: Annotated[bool, Depends(login)] = False):
-    if logged_in:
-        return FileResponse('static/index.html')
 
 def vector_search(embedding, count=Config.PROXIMUS_MAX_RESULTS):
     bins = ("title", "url", "content")
@@ -111,7 +104,6 @@ def stream_response(prompt, time_taken, docs):
                 content = chunk["choices"][0]["delta"].get("content")
                 if content:
                     yield content
-        
         except:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
