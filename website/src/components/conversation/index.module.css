@@ -20,7 +20,7 @@
   width: 100%;
   max-height: calc(100vh - 280px);
   overflow-y: scroll;
-  font-size: 24px;
+  font-size: 18px;
   padding: 0 20px;
 }
 .form {
@@ -38,14 +38,14 @@
 .prompt:focus-visible,
 .prompt {
   padding: 10px;
-  font-size: 24px;
+  font-size: 18px;
   border-radius: 5px;
   border: 1px solid lightgray;
   outline: none;
   width: 100%;
 }
 .waiting {
-  height: 24px;
+  height: 18px;
   display: flex;
   align-items: center;
   gap: 10px;

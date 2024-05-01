@@ -3,7 +3,7 @@
   line-height: 1.5;
   font-weight: 400;
   
-  color: #213547;
+  color: #0d1b32;
   background-color: #ffffff;
 
   font-synthesis: none;
@@ -16,11 +16,13 @@
 }
 a {
   font-weight: 500;
-  color: rgb(97 191 228);
-  text-decoration: none;
+  color: #0097d3;
+  border-bottom: 1px solid #0097d3;
 }
 a:hover {
-  text-decoration: underline 2px;
+  color: #ffffff;
+  background-color: #0097d3;
+  text-decoration: none;
 }
 table{
   border-collapse: collapse;
@@ -103,15 +105,17 @@ body {
   background-color: rgb(242 241 237);
 }
 h1 {
-  font-size: 3.2em;
+  font-size: 2rem;
   line-height: 1.1;
 }
-
+ul {
+  list-style-type: none;
+}
 button {
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 10px;
-  font-size: 24px;
+  font-size: 17px;
   background-color: rgb(13 27 50);
   cursor: pointer;
   color: white;
