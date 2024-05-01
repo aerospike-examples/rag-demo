@@ -11,7 +11,7 @@ const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null);
 
     const goAuth = new GoTrue({
-		APIUrl: 'https://aero-analytics.netlify.app/.netlify/identity',
+		APIUrl: 'https://vector-rag-aerospike.netlify.app/.netlify/identity',
 		audience: '',
 		setCookie: true,
 	});
