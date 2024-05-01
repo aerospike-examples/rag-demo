@@ -53,7 +53,7 @@ async def create_chat_completion(text: Annotated[str, Form()], auth: Annotated[b
         with embed_lock:
             embedding = encoder(text, "query")
         start = time.time()
-        results = vector_search(embedding, 6)
+        results = vector_search(embedding, 5)
         time_taken = time.time() - start
 
         context = ""
