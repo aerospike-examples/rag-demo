@@ -13,7 +13,7 @@ const App = () => {
         {auth ?
         <>
           <Header />
-          {roles.includes("admin") ? <Conversation /> : <div><h2>Sorry...</h2><p>This tool is currently being shown live. Please check back later for renewed access.</p></div>}
+          {roles.includes("admin") ? <Conversation /> : <div className={styles.content}><h2>Sorry...</h2><p>This tool is currently being shown live. Please check back later for renewed access.</p></div>}
         </>
         :
         <SignIn />}
