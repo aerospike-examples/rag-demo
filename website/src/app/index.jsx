@@ -5,7 +5,7 @@ import Header from '../components/header';
 import Conversation from '../components/conversation';
 
 const App = () => {
-  const { auth } = useAuth();
+  const { auth, roles } = useAuth();
 
   return (
       auth !== null && 
@@ -13,7 +13,7 @@ const App = () => {
         {auth ?
         <>
           <Header />
-          <Conversation />
+          {roles.includes("admin") ? <Conversation /> : <div><h2>Sorry...</h2><p>This tool is currently being shown live. Please check back later for renewed access.</p></div>}
         </>
         :
         <SignIn />}
