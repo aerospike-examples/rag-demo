@@ -1,0 +1,18 @@
+# Aerospike dependencies
+aerospike-vector-search
+
+# Web Server 
+fastapi
+uvicorn[standard]
+python-multipart
+
+# Web Scraper
+scrapy
+scrapy-playwright
+markdownify
+
+# RAG dependencies
+openai
+transformers
+torch
+einops

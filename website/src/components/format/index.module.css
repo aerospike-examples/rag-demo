@@ -1,0 +1,19 @@
+pre.codeBlock {
+    position: relative;
+    width: inherit;
+    height: fit-content;
+    padding: 0;
+    font-size: 14px;
+    line-height: 22px;
+    overflow: hidden;
+}
+.codeContainer {
+    padding: .5rem;
+    position: relative;
+    width: 100%;
+    overflow: auto;
+}
+.code {
+    width: fit-content;
+    padding: .5rem;
+}

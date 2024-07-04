@@ -1,0 +1,10 @@
+/config/**
+/data/**
+
+.venv
+**/node_modules
+**/dist
+
+**/.scrapy
+
+__pycache__

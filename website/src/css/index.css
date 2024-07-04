@@ -1,0 +1,126 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  
+  color: #0d1b32;
+  background-color: #ffffff;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+* {
+  box-sizing: border-box;
+}
+a:not(:has(img)) {
+  font-weight: 500;
+  color: #0097d3;
+  text-decoration: none;
+  border-bottom: 1px solid #0097d3;
+}
+a:not(:has(img)):hover {
+  color: #ffffff;
+  background-color: #0097d3;
+}
+table{
+  border-collapse: collapse;
+  display: block;
+  margin-bottom: 16px; 
+  text-indent: initial;
+  border-spacing: 2px;
+  border-color: grey;
+}
+table thead, table tr:nth-child(2n) {
+  background-color: rgba(0, 0, 0, .03);
+}
+thead {
+  display: table-header-group;
+  vertical-align: middle;
+  border-color: inherit;
+}
+th {
+  display: table-cell;
+  vertical-align: inherit;
+  text-align: -internal-center;
+}
+table th {
+  background-color: inherit;
+  color: inherit;
+  font-weight: 700;
+}
+table tr {
+  background-color: transparent;
+  border-top: 1px solid #dadde1;
+}
+tr{
+  display: table-row;
+  vertical-align: inherit;
+  border-color: inherit;
+}
+table td {
+  color: inherit;
+}
+table td, table th {
+  border: 1px solid #dadde1;
+  padding: 12px;
+}
+td {
+  display: table-cell;
+  vertical-align: inherit;
+}
+pre {
+  background-color: var(--prism-background-color);
+  border-radius: .4rem;
+  color: inherit;
+  font: 95%/1.45 SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  padding: 1rem;
+  display: block;
+  white-space: pre;
+}
+pre code {
+  background-color: initial;
+  border: none;
+  font-size: 100%;
+  line-height: inherit;
+  padding: 0;
+}
+code {
+  background-color: #f6f7f8;
+  border: .1rem solid #0000001a;
+  border-radius: .4rem;
+  font-size: 95%;
+  padding: .1rem;
+}
+html,
+body {
+  margin: 0;
+  min-width: 320px;
+  height: 100%;
+}
+#root {
+  width: 100%;
+  height: 100%;
+  background-color: rgb(242 241 237);
+}
+h1 {
+  font-size: 2rem;
+  line-height: 1.1;
+}
+ul {
+  list-style-type: none;
+}
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 10px;
+  font-size: 17px;
+  background-color: rgb(13 27 50);
+  cursor: pointer;
+  color: white;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}

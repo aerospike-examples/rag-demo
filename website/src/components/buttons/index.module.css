@@ -1,0 +1,11 @@
+.btn {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.btn:disabled svg {
+    stroke: rgba(16, 16, 16, 0.3);
+}
+.btn:disabled:hover {
+    border-color: transparent;
+}
