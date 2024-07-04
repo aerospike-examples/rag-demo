@@ -1,0 +1,51 @@
+services:
+  aerospike-cluster:
+    image: aerospike/aerospike-server-enterprise:latest
+    container_name: aerospike-cluster
+    command: --config-file /etc/aerospike/aerospike.conf
+    ports:
+      - 3000:3000
+    volumes:
+      - ${PWD}/config/aerospike:/etc/aerospike
+    healthcheck:
+      test: [ "CMD", "asinfo", "-p", "3000", "-v", "build" ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - rag-demo
+
+  aerospike-vector:
+    image: aerospike/aerospike-proximus:0.4.0
+    container_name: aerospike-vector
+    volumes:
+      - ${PWD}/config/vector:/etc/aerospike-proximus
+    depends_on:
+      aerospike-cluster:
+        condition: service_healthy
+    networks:
+      - rag-demo
+
+  aerospike-client:
+    build:
+      context: .
+      dockerfile: docker_server.Dockerfile
+    container_name: aerospike-client
+    env_file: config/config.env
+    ports:
+      - 8080:8080
+    networks:
+      - rag-demo
+
+  aerospike-website:
+    build:
+      context: .
+      dockerfile: docker_website.Dockerfile
+    container_name: aerospike-website
+    ports:
+      - 4173:4173
+    networks:
+      - rag-demo
+
+networks:
+  rag-demo: {}

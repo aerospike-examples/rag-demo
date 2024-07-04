@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import styles from './index.module.css';
 import Format from '../format';
-import { useAuth } from '../../hooks/useAuth';
 
 const Conversation = () => {
 	const [prompt, setPrompt] = useState("");
@@ -10,7 +9,6 @@ const Conversation = () => {
 	const [streaming, setStreaming] = useState(false);
 	const prmtRef = useRef();
 	const convRef = useRef();
-	const { user } = useAuth();
 
 	useEffect(() => {
 		convRef.current?.scrollIntoView({ behavior: "smooth"});
@@ -27,11 +25,8 @@ const Conversation = () => {
 		setConversation(prev => prev === null ? `### ${prompt.trim()}\n\n` : `${prev}### ${prompt.trim()}\n\n`);
 		setPrompt("");
 
-		fetch("https://server.vector-rag.aerospike.com/rest/v1/chat/", {
+		fetch("http://localhost:8080/rest/v1/chat/", {
 			method: "POST",
-			headers: {
-				'Authorization': `Bearer ${user.token.access_token}`
-			},
 			body
 		})
 		.then(async (response) => {
@@ -49,7 +44,6 @@ const Conversation = () => {
 					let text = decoder.decode(value, {stream: true});
 					if(text === "\nGenerating a response...\n\n" || text === "\nWaiting for slot...\n\n") setWaiting(true);
 					else setWaiting(false);
-
 					setConversation(prev => prev + text);
 				}
 			}

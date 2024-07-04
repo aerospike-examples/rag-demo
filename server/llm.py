@@ -1,11 +1,8 @@
-import llama_cpp
+import os
+from openai import OpenAI
 
-model = llama_cpp.Llama(
-    model_path="../../Models/gemma-7b-it/gemma-7b-it.gguf",
-    chat_format="gemma",
-    n_ctx=0,
-    n_gpu_layers=-1,
-    n_threads=6
+model = OpenAI(
+    api_key=os.getenv("OPEN_AI_API_KEY"),
 )
 
 PROMPT = '''\
@@ -18,11 +15,10 @@ Question: {question}
 '''
 
 def create_chat(prompt):
-    return model.create_chat_completion(
+    return model.chat.completions.create(
+        model=os.getenv("OPEN_AI_MODEL"),
         messages=[
             {"role": "user", "content": prompt}
         ],
         stream=True,
-        repeat_penalty=1.0,
-        temperature=0
     )

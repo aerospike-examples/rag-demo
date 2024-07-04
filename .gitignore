@@ -135,6 +135,6 @@ __pycache__
 
 *.gguf
 
-*/.scrapy
+**/.scrapy
 
-*.env
+features.conf
