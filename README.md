@@ -1,6 +1,6 @@
 # Aerospike Vector Search RAG Implementation
 
-This repository houdse a RAG demo using Aerospike Vector Search (AVS). Use the following instructions for deployment.
+This repository houses a RAG demo using Aerospike Vector Search (AVS). Use the following instructions for deployment.
 
 >**Optional** 
 >
